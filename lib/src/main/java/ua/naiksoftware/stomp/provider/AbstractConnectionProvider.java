@@ -4,16 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import ua.naiksoftware.stomp.dto.LifecycleEvent;
-import ua.naiksoftware.stomp.dto.StompHeader;
-import ua.naiksoftware.stomp.dto.StompCommand;
-import ua.naiksoftware.stomp.dto.StompMessage;
 
 /**
  * Created by forresthopkinsa on 8/8/2017.
@@ -74,7 +68,8 @@ public abstract class AbstractConnectionProvider implements ConnectionProvider {
     public Completable send(String stompMessage) {
         return Completable.fromCallable(() -> {
             if (getSocket() == null) {
-                throw new IllegalStateException("Not connected");
+                return Completable.error(new IllegalStateException("Not connected"));
+                //throw new IllegalStateException("Not connected");
             } else {
                 Log.d(TAG, "Send STOMP message: " + stompMessage);
                 rawSend(stompMessage);
