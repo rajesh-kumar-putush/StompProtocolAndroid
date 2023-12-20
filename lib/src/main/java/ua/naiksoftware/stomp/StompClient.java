@@ -18,13 +18,13 @@ import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
+import ua.naiksoftware.stomp.dto.LifecycleEvent;
 import ua.naiksoftware.stomp.dto.StompCommand;
+import ua.naiksoftware.stomp.dto.StompHeader;
 import ua.naiksoftware.stomp.dto.StompMessage;
 import ua.naiksoftware.stomp.pathmatcher.PathMatcher;
 import ua.naiksoftware.stomp.pathmatcher.SimplePathMatcher;
 import ua.naiksoftware.stomp.provider.ConnectionProvider;
-import ua.naiksoftware.stomp.dto.LifecycleEvent;
-import ua.naiksoftware.stomp.dto.StompHeader;
 
 /**
  * Created by naik on 05.05.16.
@@ -243,11 +243,11 @@ public class StompClient {
         else if (!streamMap.containsKey(destPath))
             streamMap.put(destPath,
                     Completable.defer(() -> subscribePath(destPath, headerList)).andThen(
-                    getMessageStream()
-                            .filter(msg -> pathMatcher.matches(destPath, msg))
-                            .toFlowable(BackpressureStrategy.BUFFER)
-                            .doFinally(() -> unsubscribePath(destPath).subscribe())
-                            .share())
+                            getMessageStream()
+                                    .filter(msg -> pathMatcher.matches(destPath, msg))
+                                    .toFlowable(BackpressureStrategy.BUFFER)
+                                    .doFinally(() -> unsubscribePath(destPath).subscribe())
+                                    .share())
             );
         return streamMap.get(destPath);
     }
@@ -286,7 +286,7 @@ public class StompClient {
 
         topics.remove(dest);
 
-        Log.d(TAG, "Unsubscribe path: " + dest + " id: " + topicId);
+//        Log.d(TAG, "Unsubscribe path: " + dest + " id: " + topicId);
 
         return send(new StompMessage(StompCommand.UNSUBSCRIBE,
                 Collections.singletonList(new StompHeader(StompHeader.ID, topicId)), null)).onErrorComplete();
@@ -325,10 +325,13 @@ public class StompClient {
     public void setLegacyWhitespace(boolean legacyWhitespace) {
         this.legacyWhitespace = legacyWhitespace;
     }
-    
-    /** returns the to topic (subscription id) corresponding to a given destination  
+
+    /**
+     * returns the to topic (subscription id) corresponding to a given destination
+     *
      * @param dest the destination
-     * @return the topic (subscription id) or null if no topic corresponds to the destination */
+     * @return the topic (subscription id) or null if no topic corresponds to the destination
+     */
     public String getTopicId(String dest) {
         return topics.get(dest);
     }
