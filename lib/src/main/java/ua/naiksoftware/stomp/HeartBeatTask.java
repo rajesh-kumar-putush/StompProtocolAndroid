@@ -159,7 +159,7 @@ public class HeartBeatTask {
      */
     private void abortServerHeartBeatCheck() {
         lastServerHeartBeat = System.currentTimeMillis();
-        Log.d(TAG, "Aborted last check because server sent heart-beat on time ('" + lastServerHeartBeat + "'). So well-behaved :)");
+       // Log.d(TAG, "Aborted last check because server sent heart-beat on time ('" + lastServerHeartBeat + "'). So well-behaved :)");
         if (serverCheckHeartBeatTask != null) {
             serverCheckHeartBeatTask.dispose();
         }
